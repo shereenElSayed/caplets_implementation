@@ -1,0 +1,15 @@
+[1]-FRAME-/home/centos/*+0+000
+[1]-FRAME-/home/centos/*+0+000-FRAME-/home/centos/temp+0+000$/home/centos/hum+0+000$/home/centos/gas+0+000
+[0]-FRAME-/home/centos/*+0+000-FRAME-/home/user/temp+0+000$/home/centos/hum+0+000$/home/centos/gas+0+000
+[0]-FRAME-/home/centos/*+0+000-FRAME-/home/centos/temp+0+000$/home/user/hum+0+000$/home/centos/gas+0+000
+[0]-FRAME-/home/centos/*+0+000-FRAME-/home/centos/temp+0+000$/home/user/hum+0+000$/home/user/gas+0+000
+[0]-FRAME-/home/centos/*+0+011-FRAME-/home/centos/temp+0+000$/home/user/hum+0+000$/home/user/gas+0+000
+[0]-FRAME-/home/centos/*+0+011-FRAME-/home/centos/temp+0+011$/home/centos/hum+0+100$/home/user/gas+0+101
+[1]-FRAME-/home/centos/*+0+011-FRAME-/home/centos/temp+0+011$/home/centos/hum+0+100$/home/centos/gas+0+101
+[1]-FRAME-/home/centos/*+0+000-FRAME-/home/centos/temp/temp+0+000$/home/centos/hum+0+000$/home/centos/gas+0+000
+[1]-FRAME-/home/centos/*+0+000-FRAME-/home/centos/temp+0+000$/home/centos/hum+0+000$/home/centos/gas+0+000-FRAME-/home/centos/temp/1+0+001$/home/centos/hum/1+0+011$/home/centos/gas/1+0+101
+[0]-FRAME-/home/centos/*+0+000-FRAME-/home/centos/temp+0+010$/home/centos/hum+0+000$/home/centos/gas+0+000-FRAME-/home/centos/temp/1+0+001$/home/centos/hum/1+0+011$/home/centos/gas/1+0+101
+[1]-FRAME-/home/centos/*+0+000-FRAME-/home/centos/temp+0+000$/home/centos/hum+0+000$/home/centos/gas+0+000-FRAME-/home/centos/temp/1+0+001$/home/centos/gas/1+0+101$/home/centos/hum/1+0+011
+[1]-FRAME-/home/centos/*+0+000-FRAME-/home/centos/temp+0+000$/home/centos/hum+0+000$/home/centos/gas+0+000-FRAME-/home/centos/temp/1+0+001$/home/centos/hum/hum/hum+0+011$/home/centos/gas/1+0+101
+[1]-FRAME-/home/centos/*+0+000-FRAME-/home/centos/temp+0+000$/home/centos/hum+0+000$/home/centos/gas+0+000-FRAME-/home/centos/temp/1+0+001$/home/centos/hum/1+0+011$/home/centos/gas/1+0+101
+[1]-FRAME-/home/centos/*+0+000-FRAME-/home/centos/temp+0+000$/home/centos/hum+0+000$/home/centos/gas+0+000-FRAME-/home/centos/hum/1+0+011$/home/centos/temp/1+0+001$/home/centos/gas/1+0+101

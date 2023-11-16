@@ -1,0 +1,22 @@
+{
+    "tag" : "sjksdjkhsjdhksdj",
+    "frames": [
+        {
+            "capabilitities": [
+                {
+                    "type":0,
+                    "resource": "/home/centos/TempSensors/*",
+                    "operation": 0 
+                },
+                {
+                    "type":0,
+                    "resource": "/home/centos/HumiditySensors/*",
+                    "operation": 0 
+                }
+            ],
+            "constraints": [
+                "bytecode" , "bytecode"
+            ]  
+        }
+    ]
+}

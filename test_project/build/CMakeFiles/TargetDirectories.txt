@@ -1,0 +1,3 @@
+/home/centos/caplets/test_project/build/CMakeFiles/test_caplets.dir
+/home/centos/caplets/test_project/build/CMakeFiles/edit_cache.dir
+/home/centos/caplets/test_project/build/CMakeFiles/rebuild_cache.dir

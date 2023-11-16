@@ -1,0 +1,4 @@
+Token with root only: CA2F1A83E104DF96BBC4DE2D03357D59D8DB3A6F2B5B0975011B19412203223E-FRAME-/home/centos/*+0+000
+Token with frame_1 : 03EC4FA8CC8F2CAE10507C26641A8B45CCB7FE238FFF74E18C62024615AECB91-FRAME-/home/centos/*+0+000-FRAME-/home/centos/temp+0+000$/home/centos/hum+0+000$/home/centos/gas+0+000
+Token with frame_2 : 79507F157A6951F39AFB42B7959D7B71F9E43FD63AB8E8ECD0DDCABF8A6AFAF0-FRAME-/home/centos/*+0+000-FRAME-/home/centos/temp+0+000$/home/centos/hum+0+000$/home/centos/gas+0+000-FRAME-/home/centos/temp/1+0+001$/home/centos/hum/1+0+011$/home/centos/gas/1+0+101
+Token with frame_3 : EF0C659595DA6E73FEB0E60BC55E5DCCA605E1EA8B76C328CF50070D99659DF3-FRAME-/home/centos/*+0+000-FRAME-/home/centos/temp+0+000$/home/centos/hum+0+000$/home/centos/gas+0+000-FRAME-/home/centos/temp/1+0+001$/home/centos/hum/1+0+011$/home/centos/gas/1+0+101-FRAME-/home/centos/temp/1+0+011$/home/centos/hum/1+0+100$/home/centos/gas/1+0+101
