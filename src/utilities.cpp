@@ -58,41 +58,9 @@ bool util::is_cap_subset_of_cap(const CapabilityStructure& part, const Capabilit
     if(((CapabilityStructure)part).get_type() != ((CapabilityStructure)full).get_type()){
         return false;
     }
-    if (((CapabilityStructure)part).get_cap_bits() < ((CapabilityStructure)full).get_cap_bits()){
+    if( (((CapabilityStructure)part).get_cap_bits() & ((CapabilityStructure)full).get_cap_bits()) != ((CapabilityStructure)part).get_cap_bits()){
         return false;
     }
+    
     return true;
 }
-
-
-
-
-// template<std::size_t N>
-// bool operator>(const std::bitset<N>& x, const std::bitset<N>& y)
-// {
-//     for (int i = N-1; i >= 0; i--) {
-//         if (y[i] ^ x[i]) return x[i];
-//     }
-//     return false;
-// }
-
-// template<std::size_t N>
-// bool operator>(const std::bitset<N>& x, const std::bitset<N>& y)
-// {
-//     for (int i = N-1; i >= 0; i--) {
-//         if (x[i] ^ y[i]) return y[i];
-//     }
-//     return false;
-// }
-
-
-
-// auto util::parse_token(const std::string& token){
-//     simdjson::ondemand::parser parser;
-//     simdjson::padded_string json(token);
-//     return parser.iterate(json);
-// }
-
-// void util::token_to_string(simdjson::ondemand::document token, std::string& token_str){
-    
-// }

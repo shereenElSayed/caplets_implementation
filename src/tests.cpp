@@ -26,10 +26,29 @@ void Tests::test_capabilitystructure(){
         printf("Result: %s\nExpected: %s\n", result.c_str(), string_cap_str.c_str());
     }
 }
+
+void Tests::test_constraint(){
+    Constraint constraint;
+    std::string myconst = "FUNCTION:indentityConstraint:key1:key2";
+    constraint.from_string(myconst);
+    if(strcmp(constraint.get_function().c_str(), "indentityConstraint") == 0 ){
+        printf("Constraint Function PASSED\n");
+    } else {
+        printf("Constraint Function FAILED\n");
+    }
+    std::string result = constraint.to_string();
+    if(strcmp(result.c_str(), myconst.c_str()) == 0){
+        printf("Constraint::to_string PASSED\n");
+    } else {
+        printf("Constraint::to_string FAILED\n");
+        printf("Result: %s\nExpected: %s\n", result.c_str(), myconst.c_str());
+    }
+}
+
 // //Test Frame
 void Tests::test_frame() {
     Frame frame;
-    std::string frame_string = "/home/centos/dir/*+0+000$/home/centos/anotherdir/*+1+001";
+    std::string frame_string = "/home/centos/dir/*+0+000$/home/centos/anotherdir/*+1+001$FUNCTION:indentityConstraint:key1:key2";
     frame.from_String(frame_string);
     int count = 0;
     std::string expected_res;
@@ -66,6 +85,19 @@ void Tests::test_frame() {
 
         count++;
     }
+    if(strcmp(((Constraint)frame.get_constraints()[0]).get_function().c_str(), "indentityConstraint") == 0 ){
+        printf("Frame::Constraint Function PASSED\n");
+    } else {
+        printf("Frame::Constraint Function FAILED\n");
+    }
+    std::string result = ((Constraint)frame.get_constraints()[0]).to_string();
+    if(strcmp(result.c_str(), "FUNCTION:indentityConstraint:key1:key2") == 0){
+        printf("Frame::Constraint::to_string PASSED\n");
+    } else {
+        printf("Constraint::to_string FAILED\n");
+        printf("Frame::Result: %s\nExpected: FUNCTION:indentityConstraint:key1:key2\n", result.c_str());
+    }
+
 
 
     //This is working but flipped!
@@ -167,7 +199,7 @@ void test_checks(){
 void Tests::create_token(){
     Token token;
     Frame root_frame;
-    root_frame.from_String("/home/centos/*+0+000");
+    root_frame.from_String("-FRAME-/home/centos/*+0+111");
     token.add_frame(root_frame);
     printf("Token with root only: %s\n", token.get_tag().c_str());
     
@@ -185,4 +217,18 @@ void Tests::create_token(){
     frame_3.from_String("/home/centos/temp/1+0+011$/home/centos/hum/1+0+100$/home/centos/gas/1+0+101");
     token.add_frame(frame_3);
     printf("Token with frame_3 : %s\n", token.get_tag().c_str());
-} 
+}
+
+void Tests::create_tokens_signatures(){
+    std::ifstream test_file; 
+    std::string test_case;
+    test_file.open("/home/centos/caplets/examples/correct_signatures.txt");
+    
+    if (test_file.is_open()){
+        while (getline(test_file, test_case)) { 
+            Token token;
+            token.from_string_no_tag(test_case, true);
+            printf("%s\n",token.to_string_w_tag().c_str());
+        }
+    }
+}

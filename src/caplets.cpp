@@ -26,7 +26,25 @@ void CapabilityStructure::from_String(const std::string cap_string) {
     this->cap_bits = atoi(result[2].c_str());
 }
 
-// Frame looks like this: "/home/centos/dir/*+0+000$/home/centos/anotherdir/*+1+001"
+
+const std::string Constraint::to_string(){
+    std::string result =  "FUNCTION:" + this->function;
+    for(std::string s : this->parameters){
+        result += ":" + s;
+    }
+    return result;
+}
+
+void Constraint::from_string(const std::string const_string){
+    //FUNCTION:<function_name>:<parameter>:<parameter>:<parameter>
+    int func_para_separator_index = const_string.find(':');
+    // this->function = const_string.substr(9, func_para_separator_index);
+    util::splitString(this->parameters, const_string.substr(func_para_separator_index+1, const_string.size()), ":");
+    this->function = this->parameters[0];
+    this->parameters.erase(this->parameters.begin());
+}
+
+// Frame looks like this: "/home/centos/dir/*+0+000$/home/centos/anotherdir/*+1+001$FUNCTION:<function_name>:<parameter>:<parameter>:<parameter>"
 std::string Frame::to_string(){
     std::string result="";
     int count =0, size = this->capabilities.size();
@@ -36,6 +54,21 @@ std::string Frame::to_string(){
             result += "$";
         }
         count++;
+        
+
+    }
+    if (this->constraints.size() > 0){
+        result += "$";
+    }
+    count =0;
+    size = this->constraints.size();
+    for (const auto& constraint : this->constraints){
+        result+= ((Constraint)constraint).to_string();
+        if(count < size-1){
+            result += "$";
+        }
+        count++;
+        
 
     }
     result.substr(0, result.length() - 1); //remove last $
@@ -48,10 +81,19 @@ void Frame::from_String(const std::string str){
     int cap_count = string_vec.size();
     // CapabilityStructure* capstr;
     for(int i=0; i<cap_count; i++){
-        CapabilityStructure capstr;
-        // printf("Frame:: from string: %s\n",string_vec[i].c_str());
-        capstr.from_String(string_vec[i]);
-        this->capabilities.emplace_back(capstr);
+        int index = string_vec[i].find("FUNCTION:");
+        // printf("string: %s with index %d\n",string_vec[i].c_str(), index );
+        if (index == -1) {
+            CapabilityStructure capstr;
+            // printf("Frame:: from string: %s\n",string_vec[i].c_str());
+            capstr.from_String(string_vec[i]);
+            this->capabilities.emplace_back(capstr);
+        } else {
+            Constraint constraint;
+            constraint.from_string(string_vec[i]);
+            this->constraints.emplace_back(constraint);
+        }
+        
     }
 }
 
@@ -81,24 +123,16 @@ std::string Token::to_string_no_tag(){
     return output;
 }
 
-void Token::from_string(const std::string& str_token){
+void Token::from_string(const std::string& str_token, bool calc_tag){
     //Get tag
-    this->tag = str_token.substr(0, str_token.find("-FRAME-",0));
-    this->from_string_no_tag(str_token);
-    // printf("HERE tag: %s\n", this->tag.c_str());
-    //Get token body
-    // std::vector<std::string> str_frames;
-    // util::splitString(str_frames, str_token.substr(str_token.find("-FRAME-")+7, str_token.length()), "-FRAME-");    
-    
-    
-    // for(int i=0; i<str_frames.size();i++){
-    //     Frame frame;
-    //     // printf("frame: %s\n", str_frames[i].c_str());
-    //     frame.from_String(str_frames[i]);
-    //     this->body.emplace_back(frame);
-    // }
+    if(!calc_tag) {
+        this->tag = str_token.substr(0, str_token.find("-FRAME-",0));
+    }
+        
+    this->from_string_no_tag(str_token, calc_tag);
+
 }
-void Token::from_string_no_tag(const std::string& str_token){
+void Token::from_string_no_tag(const std::string& str_token, bool calc_tag){
     
     //Get token body
     std::vector<std::string> str_frames;
@@ -109,7 +143,10 @@ void Token::from_string_no_tag(const std::string& str_token){
         Frame frame;
         // printf("frame: %s\n", str_frames[i].c_str());
         frame.from_String(str_frames[i]);
-        this->body.emplace_back(frame);
+        if(calc_tag)
+            add_frame(frame);
+        else
+            this->body.emplace_back(frame);
     }
 }
 
@@ -173,10 +210,10 @@ const bool Token::is_valid_derivation(const Token& token){
                             printf("Failed for cap check %s and %s\n",less_permissive_caps[j].to_string().c_str(),
                              permissive_caps[z].to_string().c_str());
                         }
-                    } else {
+                } else {
                         printf("Failed for path check %s and %s\n",less_permissive_caps[j].get_resource().c_str(),
                          permissive_caps[z].get_resource().c_str());
-                    }
+                }
             }
             if(!valid_cap) return false;
         }

@@ -12,28 +12,18 @@ enum capability_type {
     owner_cap
 };
 
-// enum device_capability {
-//     all,
-//     Write_W_Handler_Read,
-//     Write_No_Handler_Read,
-//     Write_W_Handler,
-//     Write_No_Handler,
-//     Read_Only
-// };
-
-
 class CapabilityStructure {
     private:
         std::string resource;
         capability_type type;
-
+        
+        //Device Cap code: 3 bits Handler-Write-Read
+        //i.e.: write with handler and read --> 111
+        //      write and read but no handler --> 011
+        //      write no handler --> 010
+        //      read only --> 001         
         std::bitset<3> cap_bits;
-        //Device Cap code: 0: *
-        //                 1: Write_W_Handler_Read
-        //                 2: Write_No_Handler_Read
-        //                 3: Write_W_Handler
-        //                 4: Write_No_Handler
-        //                 5: Read_Only
+        
     public: 
         const capability_type get_type(){return this->type;};
         const std::bitset<3> get_cap_bits(){return this->cap_bits;};
@@ -42,16 +32,39 @@ class CapabilityStructure {
         void from_String(const std::string cap_string);
 };
 
+class Constraint {
+    
+    private:
+        std::string function;
+        std::vector<std::string> parameters;
+    public:
+        const std::string get_function(){return this->function;};
+        const std::vector<std::string> get_parameters(){return this->parameters;};
+        const std::string to_string();
+        void from_string(const std::string const_string);
+};
+ 
 class Frame {
     private:
         //Key: the resource
-        //Value: vector or capabilities for this resource
+        // Value: vector or capabilities for this resource
+        //FUNCTION:<function_name>:<parameter>:<parameter>:<parameter>:FUNCTION:<function_name>:<parameter>:<parameter>
         std::vector<CapabilityStructure> capabilities;
+        std::vector<Constraint> constraints;
     public:
-        //vector<constraint> constraints;
+        
         std::string to_string();
         void from_String(const std::string str);
         const std::vector<CapabilityStructure>& get_capabilities(){return capabilities;};
+        const std::vector<Constraint>& get_constraints(){return constraints;};
+};
+
+class Request {
+    private:
+        std::string woof_name;
+        std::bitset<3> operation;
+        std::string handler_name;
+
 };
 
 class Token {
@@ -66,19 +79,14 @@ class Token {
         const std::vector<Frame> get_body(){return body;}
         std::string to_string_w_tag();
         std::string to_string_no_tag();
-        void from_string(const std::string& str_token);
-        void from_string_no_tag(const std::string& str_token);
+        void from_string(const std::string& str_token, bool calc_tag=false);
+        void from_string_no_tag(const std::string& str_token, bool calc_tag=false);
         void add_frame(Frame frame); //Add the frame to body and recalculate the tag
         const static bool is_valid_signature(const Token& token);
         const static bool is_valid_derivation(const Token& token);
         const static bool is_valid_constraint(const Token& token);
         const static bool is_valid_token(const Token& token); 
-};
-
-
-
-class Verifications {
-    public:
-        static bool is_valid_token(std::string str_token);
 
 };
+
+

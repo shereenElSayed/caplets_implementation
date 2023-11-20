@@ -1,11 +1,14 @@
-
-
+#include "tests.h"
+#include "caplets.h"
 int main(){
     // test_capabilitystructure();
-    // test_frame();
+    //Tests::test_frame();
     // test_token();
-//    test_signature();
-    // create_token();
+   Tests::test_signature();
+    
     // test_derivation();
+    // Tests::test_constraint();
+
+    // Tests::create_tokens_signatures();
     return 0;
 }
