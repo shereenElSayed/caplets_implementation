@@ -1,1 +1,1 @@
-[0]-FRAME-/home/centos/*+0+000-FRAME-/home/centos/temp+0+000$/home/user/hum+0+000$/home/user/gas+0+000
+[0]%FRAME%/home/centos/*+0+000%FRAME%/home/centos/temp+0+000$/home/user/hum+0+000$/home/user/gas+0+000

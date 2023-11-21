@@ -1,1 +1,5 @@
-- Update the validation tests to cover the rearrangement for capabilities numbers
+- add request class
+- prepare the token to have a request
+- verify the request
+- Add parameter to make sure the request is only allowing PUT/put with handler
+- Add implementation for the getwoof

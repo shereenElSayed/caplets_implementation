@@ -113,8 +113,8 @@ void Tests::test_frame() {
 
 //Testing Tokens
 void Tests::test_token(){
-    std::string str_token = "ndkjscvkjsdvhbsdkjcvndkjsc2421-FRAME-/home/frame1/dir/*+0+000$/home/frame1/anotherdir/*+1+001"
-                            "-FRAME-/home/frame2/dir/*+0+000$/home/frame2/anotherdir/*+1+001";
+    std::string str_token = "ndkjscvkjsdvhbsdkjcvndkjsc2421%FRAME%/home/frame1/dir/*+0+000$/home/frame1/anotherdir/*+1+001"
+                            "%FRAME%/home/frame2/dir/*+0+000$/home/frame2/anotherdir/*+1+001";
     Token token;
     token.from_string(str_token);
     // printf("TAG: %s\n", token.get_tag());
@@ -199,7 +199,7 @@ void test_checks(){
 void Tests::create_token(){
     Token token;
     Frame root_frame;
-    root_frame.from_String("-FRAME-/home/centos/*+0+111");
+    root_frame.from_String("%FRAME%/home/centos/*+0+111");
     token.add_frame(root_frame);
     printf("Token with root only: %s\n", token.get_tag().c_str());
     
@@ -219,16 +219,17 @@ void Tests::create_token(){
     printf("Token with frame_3 : %s\n", token.get_tag().c_str());
 }
 
-void Tests::create_tokens_signatures(){
+void Tests::create_tokens_signatures(std::string path){
     std::ifstream test_file; 
     std::string test_case;
-    test_file.open("/home/centos/caplets/examples/correct_signatures.txt");
-    
+    test_file.open(path);
     if (test_file.is_open()){
         while (getline(test_file, test_case)) { 
             Token token;
             token.from_string_no_tag(test_case, true);
             printf("%s\n",token.to_string_w_tag().c_str());
         }
+    } else {
+        printf("FILE NOT OPENED\n");
     }
 }

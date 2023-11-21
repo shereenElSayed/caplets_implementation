@@ -1,0 +1,13 @@
+%FRAME%/home/centos/*+0+111%FRAME%/home/centos/cspot-caplets/*+0+111
+%FRAME%/home/centos/*+0+111%FRAME%/home/centos/cspot-caplets/*+0+111%FRAME%/home/centos/cspot-caplets/sensor_log+0+111
+%FRAME%/home/centos/*+0+111%FRAME%/home/centos/cspot-caplets/*+0+111%FRAME%/home/centos/cspot-caplets/sensor_log+0+111%FRAME%/home/centos/cspot-caplets/sensor_log+0+110
+%FRAME%/home/centos/*+0+111%FRAME%/home/centos/cspot-caplets/*+0+111%FRAME%/home/centos/cspot-caplets/sensor_log+0+011
+%FRAME%/home/centos/*+0+111%FRAME%/home/centos/cspot-caplets/*+0+111%FRAME%/home/centos/cspot-caplets/sensor_log+0+010
+%FRAME%/home/centos/*+0+111%FRAME%/home/centos/cspot-caplets/*+0+111%FRAME%/home/centos/cspot-caplets/sensor_log+0+01
+
+4EB744B4B49783B51C308D1998765EC4B7FD267209F56859412BDEC3EF499D70%FRAME%/home/centos/*+0+111%FRAME%/home/centos/cspot-caplets/*+0+111
+91E8677D4CFAB0F2518D94A888E390FA3C3F458376F34F4E057B4F15AAB50624%FRAME%/home/centos/*+0+111%FRAME%/home/centos/cspot-caplets/*+0+111%FRAME%/home/centos/cspot-caplets/sensor_log+0+111
+8EB926AAEE884C0EA65D2BC45CD8A5C773B5016EA75EDC7A3D9BEE08FCD3DA29%FRAME%/home/centos/*+0+111%FRAME%/home/centos/cspot-caplets/*+0+111%FRAME%/home/centos/cspot-caplets/sensor_log+0+111%FRAME%/home/centos/cspot-caplets/sensor_log+0+110
+8C224B56809FCD1476C8E721D6A58B80C23887CB99D4A2BC936977ACDFC79ED4%FRAME%/home/centos/*+0+111%FRAME%/home/centos/cspot-caplets/*+0+111%FRAME%/home/centos/cspot-caplets/sensor_log+0+011
+90DB4FA331FA1C9EE549F152BD04E03A36F7B4C6E0C339485A2F8DA0EB5A2D43%FRAME%/home/centos/*+0+111%FRAME%/home/centos/cspot-caplets/*+0+111%FRAME%/home/centos/cspot-caplets/sensor_log+0+010
+DBDD640E1402A3E9822F74F7EA74A4AB443191FCDEEF054D18981B792848D023%FRAME%/home/centos/*+0+111%FRAME%/home/centos/cspot-caplets/*+0+111%FRAME%/home/centos/cspot-caplets/sensor_log+0+001

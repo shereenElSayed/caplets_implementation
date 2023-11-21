@@ -100,12 +100,12 @@ void Frame::from_String(const std::string str){
 
 std::string Token::to_string_w_tag(){
     std::string output;
-    output = this->tag + "-FRAME-";
+    output = this->tag + "%FRAME%";
     int count = this->body.size();
     for(int i=0; i<count; i++){
         output += this->body[i].to_string();
         if(i<count-1){
-            output += "-FRAME-";
+            output += "%FRAME%";
         }
     }
     return output;
@@ -117,7 +117,7 @@ std::string Token::to_string_no_tag(){
     for(int i=0; i<count; i++){
         output += this->body[i].to_string();
         if(i<count){
-            output += "-FRAME-";
+            output += "%FRAME%";
         }
     }
     return output;
@@ -126,7 +126,7 @@ std::string Token::to_string_no_tag(){
 void Token::from_string(const std::string& str_token, bool calc_tag){
     //Get tag
     if(!calc_tag) {
-        this->tag = str_token.substr(0, str_token.find("-FRAME-",0));
+        this->tag = str_token.substr(0, str_token.find("%FRAME%",0));
     }
         
     this->from_string_no_tag(str_token, calc_tag);
@@ -136,13 +136,13 @@ void Token::from_string_no_tag(const std::string& str_token, bool calc_tag){
     
     //Get token body
     std::vector<std::string> str_frames;
-    util::splitString(str_frames, str_token.substr(str_token.find("-FRAME-")+7, str_token.length()), "-FRAME-");    
-    
+    util::splitString(str_frames, str_token.substr(str_token.find("%FRAME%")+7, str_token.length()), "%FRAME%");    
     
     for(int i=0; i<str_frames.size();i++){
         Frame frame;
         // printf("frame: %s\n", str_frames[i].c_str());
         frame.from_String(str_frames[i]);
+        // printf("Here3\n");
         if(calc_tag)
             add_frame(frame);
         else

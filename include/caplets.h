@@ -43,6 +43,11 @@ class Constraint {
         const std::string to_string();
         void from_string(const std::string const_string);
 };
+
+class StaticConstraintFunctions {
+    const static bool identity_constraint(std::string user);
+    const static bool expiration_time(std::string time);
+};
  
 class Frame {
     private:
@@ -64,7 +69,13 @@ class Request {
         std::string woof_name;
         std::bitset<3> operation;
         std::string handler_name;
-
+        std::string value;
+    
+    public: 
+        const std::string get_woof_name(){return woof_name;};
+        const std::string get_handler_name(){return handler_name;};
+        const std::string get_value(){return value;};
+        
 };
 
 class Token {
@@ -85,7 +96,7 @@ class Token {
         const static bool is_valid_signature(const Token& token);
         const static bool is_valid_derivation(const Token& token);
         const static bool is_valid_constraint(const Token& token);
-        const static bool is_valid_token(const Token& token); 
+        const static bool is_valid_token(const Token& token);
 
 };
 
