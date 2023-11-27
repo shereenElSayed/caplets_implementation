@@ -10,7 +10,7 @@
 void Tests::test_capabilitystructure(){
     CapabilityStructure st;
     std::string string_cap_str= "/home/centos/dir/*+0+001";
-    st.from_String(string_cap_str);
+    st.from_string(string_cap_str);
     if( strcmp(st.get_resource().c_str(), "/home/centos/dir/*") == 0 &&
         st.get_type() == capability_type::device_cap &&
         st.get_cap_bits()[0] == true &&  st.get_cap_bits()[1] == false){
@@ -49,7 +49,7 @@ void Tests::test_constraint(){
 void Tests::test_frame() {
     Frame frame;
     std::string frame_string = "/home/centos/dir/*+0+000$/home/centos/anotherdir/*+1+001$FUNCTION:indentityConstraint:key1:key2";
-    frame.from_String(frame_string);
+    frame.from_string(frame_string);
     int count = 0;
     std::string expected_res;
     capability_type type;
@@ -66,21 +66,21 @@ void Tests::test_frame() {
             caps = 001;
         }
         if(strcmp(((CapabilityStructure)cap).get_resource().c_str(),expected_res.c_str()) != 0){
-            printf("Frame::from_String FAILED in resource\n");
+            printf("Frame::from_string FAILED in resource\n");
             printf("Result: %s\nExpected: %s\n", ((CapabilityStructure)cap).get_resource().c_str(),
                     expected_res.c_str());
         } else {
-            printf("Frame::from_String PASSED in resource\n");
+            printf("Frame::from_string PASSED in resource\n");
         }
         if(((CapabilityStructure)cap).get_type() != type){
-            printf("Frame::from_String FAILED in type\n");
+            printf("Frame::from_string FAILED in type\n");
         } else {
-            printf("Frame::from_String PASSED in type\n");
+            printf("Frame::from_string PASSED in type\n");
         }
         if(((CapabilityStructure)cap).get_cap_bits() != caps){
-            printf("Frame::from_String FAILED in capbits\n");
+            printf("Frame::from_string FAILED in capbits\n");
         } else {
-            printf("Frame::from_String PASSED in capbits\n");
+            printf("Frame::from_string PASSED in capbits\n");
         }
 
         count++;
@@ -198,28 +198,28 @@ void test_checks(){
 }
 void Tests::create_token(){
     Token token;
-    Frame root_frame;
-    root_frame.from_String("%FRAME%/home/centos/*+0+111");
+    Frame* root_frame = new Frame();
+    root_frame->from_string("%FRAME%/home/centos/*+0+111");
     token.add_frame(root_frame);
     printf("Token with root only: %s\n", token.get_tag().c_str());
     
-    Frame frame_1;
-    frame_1.from_String("/home/centos/temp+0+000$/home/centos/hum+0+000$/home/centos/gas+0+000");
+    Frame* frame_1 = new Frame();
+    frame_1->from_string("/home/centos/temp+0+000$/home/centos/hum+0+000$/home/centos/gas+0+000");
     token.add_frame(frame_1);
     printf("Token with frame_1 : %s\n", token.get_tag().c_str());
     
-    Frame frame_2;
-    frame_2.from_String("/home/centos/temp/1+0+001$/home/centos/hum/1+0+011$/home/centos/gas/1+0+101");
+    Frame* frame_2 = new Frame();
+    frame_2->from_string("/home/centos/temp/1+0+001$/home/centos/hum/1+0+011$/home/centos/gas/1+0+101");
     token.add_frame(frame_2);
     printf("Token with frame_2 : %s\n", token.get_tag().c_str());
 
-    Frame frame_3;
-    frame_3.from_String("/home/centos/temp/1+0+011$/home/centos/hum/1+0+100$/home/centos/gas/1+0+101");
+    Frame* frame_3 = new Frame();
+    frame_3->from_string("/home/centos/temp/1+0+011$/home/centos/hum/1+0+100$/home/centos/gas/1+0+101");
     token.add_frame(frame_3);
     printf("Token with frame_3 : %s\n", token.get_tag().c_str());
 }
 
-void Tests::create_tokens_signatures(std::string path){
+void Tests::create_tokens_tags(std::string path){
     std::ifstream test_file; 
     std::string test_case;
     test_file.open(path);
@@ -231,5 +231,40 @@ void Tests::create_tokens_signatures(std::string path){
         }
     } else {
         printf("FILE NOT OPENED\n");
+    }
+}
+
+void Tests::test_requests(){
+    std::ifstream test_file; 
+    test_file.open("/home/centos/caplets/examples/test_requests.txt");
+    std::string test_case;
+    Token test_token;
+    char ex_res_ch;
+    bool expected_result;
+    int count = 0;
+    if (test_file.is_open()){
+        while (getline(test_file, test_case)) { 
+            // Print the data of the string.
+            ex_res_ch = test_case[1];
+            if(ex_res_ch == '1'){
+                expected_result=true;
+            }else expected_result = false;
+
+            test_case = test_case.substr(3,test_case.length());
+            Token test_token;
+            test_token.from_string_no_tag(test_case);
+            bool result = Token::is_valid_request(test_token);
+            if ( result == expected_result){
+                printf("Test request #%d: PASSED\n",count);
+                printf("-----------------------\n");
+            } else {
+                printf("Test request #%d: FAILED\n",count);
+                printf("is_valid_request: %d", result);
+                printf("-----------------------\n");
+            }
+            count++;
+        }
+    } else {
+        printf("File Not open!\n");
     }
 }

@@ -10,5 +10,6 @@ class Tests {
         static void test_derivation();
         static void create_token();
         static void test_constraint();
-        static void create_tokens_signatures(std::string path);
+        static void create_tokens_tags(std::string path);
+        static void test_requests();
 };

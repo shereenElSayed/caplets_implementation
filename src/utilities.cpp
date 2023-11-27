@@ -9,8 +9,11 @@
 
 // using namespace util;
 
-void util::splitString(std::vector<std::string>& result, const std::string& input, const std::string& sep) {
-    boost::split(result, input, boost::is_any_of(sep), boost::token_compress_on); 
+void util::splitString(std::vector<std::string>& result, const std::string& input, const std::string& sep, bool token_compress_on) {
+    if(token_compress_on)
+        boost::split(result, input, boost::is_any_of(sep), boost::token_compress_on);
+    else
+        boost::split(result, input, boost::is_any_of(sep));
 }
 
 std::string util::compute_mac(const std::string& msg, const std::string& key){
