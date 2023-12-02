@@ -116,22 +116,26 @@ std::string Request::to_string(){
 }
 
 
-std::string Token::to_string_w_tag(){
-    std::string output;
-    output = this->tag + "%FRAME%";
-    int count = this->body.size();
-    for(int i=0; i<count; i++){
-        // printf("Token::to_string_w_tag:: %d\n", i);
-        output += this->body[i]->to_string();
-        if(i<count-1){
-            output += "%FRAME%";
-        }
-    }
-    return output;
-}
+// std::string CapabilityToken::to_string_w_tag(){
+//     std::string output;
+//     output = this->tag + "%FRAME%";
+//     int count = this->body.size();
+//     for(int i=0; i<count; i++){
+//         // printf("CapabilityToken::to_string_w_tag:: %d\n", i);
+//         output += this->body[i]->to_string();
+//         if(i<count-1){
+//             output += "%FRAME%";
+//         }
+//     }
+//     return output;
+// }
 
-std::string Token::to_string_no_tag(){
+std::string CapabilityToken::to_string(bool calc_tag){
+
     std::string output;
+    if(calc_tag){
+        output = this->get_tag() + "%FRAME%";
+    }
     int count = this->body.size();
     for(int i=0; i<count; i++){
         output += this->body[i]->to_string();
@@ -142,16 +146,16 @@ std::string Token::to_string_no_tag(){
     return output;
 }
 
-void Token::from_string(const std::string& str_token, bool calc_tag){
+void CapabilityToken::from_string(const std::string& str_token, bool calc_tag){
     //Get tag
     if(!calc_tag) {
-        this->tag = str_token.substr(0, str_token.find("%FRAME%",0));
+        this->set_tag(str_token.substr(0, str_token.find("%FRAME%",0)));
     }
         
     this->from_string_no_tag(str_token, calc_tag);
 
 }
-void Token::from_string_no_tag(const std::string& str_token, bool calc_tag){
+void CapabilityToken::from_string_no_tag(const std::string& str_token, bool calc_tag){
     
     //Get token body
     std::vector<std::string> str_frames;
@@ -195,13 +199,13 @@ void Token::from_string_no_tag(const std::string& str_token, bool calc_tag){
 
 }
 
-void Token::add_frame(Frame* frame){
+void CapabilityToken::add_frame(Frame* frame){
     this->body.emplace_back(frame);
     update_tag(true);
 }
 
 //Update tag calculates the tag for the last frame added and updates the token tag
-std::string Token::update_tag(bool store_tag){
+std::string CapabilityToken::update_tag(bool store_tag){
     if(this->body.size() == 1){
         //First body- use secret
         tag = util::compute_mac(this->body[0]->to_string(), SECRET);
@@ -215,13 +219,13 @@ std::string Token::update_tag(bool store_tag){
     return tag;
 }
 
-const bool Token::is_valid_signature(const Token& token){
+const bool CapabilityToken::is_valid_signature(){
     std::string calculated_tag=SECRET;
-    int body_size = token.body.size();
+    int body_size = this->body.size();
     for(int i=0; i<body_size; i++){
-        calculated_tag = util::compute_mac(token.body[i]->to_string(), calculated_tag);
+        calculated_tag = util::compute_mac(this->body[i]->to_string(), calculated_tag);
     }
-    if(strcmp(calculated_tag.c_str(), token.tag.c_str())==0){
+    if(strcmp(calculated_tag.c_str(), this->tag.c_str())==0){
         // printf("Signature validation passed\n");
         return true;
     } else {
@@ -231,18 +235,18 @@ const bool Token::is_valid_signature(const Token& token){
     
 }
 
-const bool Token::is_valid_derivation(const Token& token){
-    if(token.body.size() == 0) return false;
-    if(token.body.size() == 1) return true;
+const bool CapabilityToken::is_valid_derivation(){
+    if(this->body.size() == 0) return false;
+    if(this->body.size() == 1) return true;
     bool all_cap_are_derived = true;
-    int size = token.body.size();
-    if (token.request != NULL){
+    int size = this->body.size();
+    if (this->request != NULL){
         size -=1;
     }
 // 
-    for(int i=1; i<token.body.size(); i++){
-        std::vector<CapabilityStructure> permissive_caps = token.body[i-1]->get_capabilities();
-        std::vector<CapabilityStructure> less_permissive_caps = token.body[i]->get_capabilities();
+    for(int i=1; i<this->body.size(); i++){
+        std::vector<CapabilityStructure> permissive_caps = this->body[i-1]->get_capabilities();
+        std::vector<CapabilityStructure> less_permissive_caps = this->body[i]->get_capabilities();
         
 
         for(int j=0; j<less_permissive_caps.size(); j++){
@@ -271,22 +275,22 @@ const bool Token::is_valid_derivation(const Token& token){
     return true;
 }
 
-const bool Token::is_valid_constraint(const Token& token) {
+const bool CapabilityToken::is_valid_constraint() {
     return true;
 }
 
-const bool Token::is_valid_token(const Token& token){
+const bool CapabilityToken::is_valid_token(){
     //Signature Verification
-    if(is_valid_signature(token) && is_valid_derivation(token) && is_valid_constraint(token)){
+    if(this->is_valid_signature() && this->is_valid_derivation() && this->is_valid_constraint()){
         return true;
     }
     return false;
 }
 
-const bool Token::is_valid_request(const Token& token){
-    int body_size = token.body.size();
-    std::vector<CapabilityStructure> last_frame = token.body[body_size-2]->get_capabilities();
-    CapabilityStructure request_frame = ((Request*)token.body[body_size-1])->get_capability();
+const bool CapabilityToken::is_valid_request(){
+    int body_size = this->body.size();
+    std::vector<CapabilityStructure> last_frame = this->body[body_size-2]->get_capabilities();
+    CapabilityStructure request_frame = ((Request*)this->body[body_size-1])->get_capability();
     bool valid_cap = false;
     for(int i=0; i<last_frame.size(); i++){
         if(util::is_path_subset_of_path(
@@ -298,4 +302,12 @@ const bool Token::is_valid_request(const Token& token){
         } 
     }
     return false;
+}
+
+const bool CapabilityToken::is_valid_request_cspot(const std::bitset<3>& operation_bits){
+    if(this->is_valid_request()){
+        return util::is_cap_bits_valid(((CapabilityStructure)this->request->get_capability()).get_cap_bits(), operation_bits);
+    }
+    return false;
+
 }

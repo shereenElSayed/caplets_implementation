@@ -1,0 +1,6 @@
+[submodule "deps/czmq"]
+	path = deps/czmq
+	url = https://github.com/FatihBAKIR/czmq
+[submodule "deps/libzmq"]
+	path = deps/libzmq
+	url = https://github.com/FatihBAKIR/libzmq

@@ -18,7 +18,12 @@ botan_generate(
         auto_rng
         hex
         mac
+        rsa
+
 )
+
+add_subdirectory(deps)
+
 
 add_library(caplets src/caplets.cpp src/utilities.cpp src/tests.cpp)
 target_link_libraries(caplets PUBLIC botan-lib ${Boost_LIBRARIES})

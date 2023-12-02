@@ -1,5 +1,11 @@
-- add request class
-- prepare the token to have a request
-- verify the request
-- Add parameter to make sure the request is only allowing PUT/put with handler
+- create check for put/get for cspot
+- create a server machine
+----install psql
+----create user accounts tables
+----create mqtt 
+----create a secure channel (key exchange algorithm)
+----create a user token
+- Create an auxilary token: identity token + request tag 
+----verify identity token is valid
+----Add to valid_request to verify the identity token
 - Add implementation for the getwoof

@@ -91,35 +91,66 @@ class Request : public Frame {
 };
 
 class Token {
-    private:    
-        
+    protected: 
         std::string tag;
-        std::vector<Frame*> body;
-        Request* request=NULL;
-
-        std::string update_tag(bool store_tag=false);
-        bool integrety_check();
+        virtual std::string update_tag(bool store_tag=false)=0;
 
     public:
         const std::string get_tag(){return tag;};
+        void set_tag(const std::string& tag){this->tag = tag;};
+        virtual std::string to_string(bool contain_tag=false)=0;
+        virtual void from_string(const std::string& str_token, bool calc_tag=false)=0;
+        virtual void from_string_no_tag(const std::string& str_token, bool calc_tag=false)=0;
+        virtual const bool is_valid_signature()=0;
+        virtual const bool is_valid_derivation()=0;
+        virtual const bool is_valid_constraint()=0;
+        virtual const bool is_valid_token()=0;
+};
+
+class IdentidtyToken : public Token{
+    private:
+        
+        std::string identity_token;
+        std::string request_tag;
+        std::string update_tag(bool store_tag=false) override;
+
+    public:
+        
+        std::string to_string(bool contain_tag=false) override;
+        void from_string(const std::string& str_token, bool calc_tag=false) override;
+        void from_string_no_tag(const std::string& str_token, bool calc_tag=false) override;
+
+};
+
+class CapabilityToken : public Token{
+    private:    
+        
+        std::vector<Frame*> body;
+        Request* request=NULL;
+
+        std::string update_tag(bool store_tag=false) override;
+        bool integrety_check();
+
+    public:
         const std::vector<Frame*> get_body(){return body;}
         const Request* get_request(){return request;};
-
-        void set_tag(const std::string& tag){this->tag = tag;};
         void set_body_frames(const std::vector<Frame*>& body) { this->body = body;};
         void set_request(Request* request, bool update_tag=false){if (update_tag){this->request = request; this->update_tag(true);} else {this->request = request;} }
 
-        std::string to_string_w_tag();
-        std::string to_string_no_tag();
-        void from_string(const std::string& str_token, bool calc_tag=false);
-        void from_string_no_tag(const std::string& str_token, bool calc_tag=false);
-        void add_frame(Frame* frame); //Add the frame to body and recalculate the tag
-        const static bool is_valid_signature(const Token& token);
-        const static bool is_valid_derivation(const Token& token);
-        const static bool is_valid_constraint(const Token& token);
-        const static bool is_valid_token(const Token& token);
-        const static bool is_valid_request(const Token& token);
 
+        std::string to_string(bool contain_tag=false) override;
+        void from_string(const std::string& str_token, bool calc_tag=false) override;
+        void from_string_no_tag(const std::string& str_token, bool calc_tag=false) override;
+        
+        void add_frame(Frame* frame); //Add the frame to body and recalculate the tag
+        const bool is_valid_signature() override;
+        const bool is_valid_derivation() override;
+        const bool is_valid_constraint() override;
+        const bool is_valid_token() override;
+        const bool is_valid_request();
+
+        //CSpot specific checks
+        const bool is_valid_request_cspot( const std::bitset<3>& operation_bits);//operation bits are set by the woofput specifiying that this is a put with/without handler
 };
 
 

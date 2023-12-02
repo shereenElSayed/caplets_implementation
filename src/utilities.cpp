@@ -61,9 +61,12 @@ bool util::is_cap_subset_of_cap(const CapabilityStructure& part, const Capabilit
     if(((CapabilityStructure)part).get_type() != ((CapabilityStructure)full).get_type()){
         return false;
     }
-    if( (((CapabilityStructure)part).get_cap_bits() & ((CapabilityStructure)full).get_cap_bits()) != ((CapabilityStructure)part).get_cap_bits()){
-        return false;
+    return is_cap_bits_valid(((CapabilityStructure)part).get_cap_bits(), ((CapabilityStructure)full).get_cap_bits());
+
+}
+bool util::is_cap_bits_valid(const std::bitset<3>& part, const std::bitset<3>& full){
+    if( (part & full) == part){
+        return true;
     }
-    
-    return true;
+    return false;
 }
