@@ -6,8 +6,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/botan_cmake)
 
-find_package(Boost REQUIRED)
-include_directories(${BOOST_INCLUDE_DIRS})
+# find_package(Boost REQUIRED)
+# include_directories(${BOOST_INCLUDE_DIRS})
 find_package(Botan 2.19.1 REQUIRED)
 
 botan_generate(
@@ -19,10 +19,25 @@ botan_generate(
         hex
         mac
         rsa
+        pbkdf
+        pbkdf1
+        pbkdf2
+        pem
+        pgp_s2k
+        pk_pad
+        pkcs11
+        poly1305
+        poly_dbl
+        prf_tls
+        prf_x942
+        proc_walk
+        processor_rng
+        psk_db
+        pubkey
 
 )
 
-add_subdirectory(deps)
+# add_subdirectory(deps)
 
 
 add_library(caplets src/caplets.cpp src/utilities.cpp src/tests.cpp)

@@ -33,4 +33,6 @@ add_executable(main main.cpp)
 target_link_libraries(main PUBLIC caplets)
 target_include_directories(main PUBLIC "./../include")
 
-add_subdirectory(secure_channel)
+add_executable(test run_tests.cpp)
+target_link_libraries(test PUBLIC caplets)
+# add_subdirectory(secure_channel)

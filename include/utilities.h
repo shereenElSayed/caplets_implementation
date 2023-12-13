@@ -4,7 +4,9 @@
 #include <caplets.h>
 
 namespace util {
-    void splitString(std::vector<std::string>& result, const std::string& input, const std::string& sep,  bool token_compress_on=true);
+    // void splitString(std::vector<std::string>& result, const std::string& input, const std::string& sep,  bool token_compress_on=true);
+    void splitString(std::vector<std::string>& result, std::string content, std::string delimeter);
+    // void split_string(std::vector<std::string>& result, std::string content, std::string delimeter);
     std::string compute_mac(const std::string& msg, const Botan::secure_vector<uint8_t>& key);
     std::string compute_mac(const std::string& msg, const std::string& key);
     //checks if part (path) is included in full (path)

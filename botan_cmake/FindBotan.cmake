@@ -155,7 +155,7 @@ function(botan_generate TARGET_NAME MODULES)
         PROPERTIES
             POSITION_INDEPENDENT_CODE ON
     )
-
+    target_link_libraries(${TARGET} ${CMAKE_DL_LIBS})
     #
     # PKCS11 Workaround
     #

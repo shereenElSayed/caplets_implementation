@@ -34,6 +34,36 @@ class CapabilityStructure {
         const std::string to_string();
         void from_string(const std::string cap_string);
 };
+class Token {
+    protected: 
+        std::string tag;
+
+    public:
+        const std::string get_tag(){return tag;};
+        void set_tag(const std::string& tag){this->tag = tag;};
+        virtual std::string to_string(bool contain_tag=false)=0;
+        virtual void from_string(const std::string& str_token, bool calc_tag=false)=0;
+
+};
+
+class IdentityToken : public Token{
+    //<TAG>%FRAME%Dummy%FRAME%<IdentityToken>%FRAME%req_TAG
+    private:
+        
+        std::string identity_token;
+        std::string request_tag;
+        
+
+    public:
+        const std::string get_identity_token(){return identity_token;};
+        const std::string get_request_tag(){return request_tag;};
+        std::string create_initial_token();
+        void add_identity_token(std::string id_token); //add identity token frame then recalculates the tag and stores it.
+        std::string add_request_tag(std::string request_tag); //This adds the req tag and calculates the new tag and returns the tag+tokenbody - Does not store tag
+        std::string to_string(bool contain_tag=false) override; //Does not adds the request tag frame. Only the tag+dummy frame+identity_token
+        void from_string(const std::string& str_token, bool calc_tag=false) override; //Calc_tag is ignored here
+        const bool is_valid_signature();
+};
 
 class Constraint {
     
@@ -45,12 +75,14 @@ class Constraint {
         const std::vector<std::string> get_parameters(){return this->parameters;};
         const std::string to_string();
         void from_string(const std::string const_string);
+        const bool is_valid_constraint(const Token* token=nullptr);
+
 };
 
-class StaticConstraintFunctions {
-    const static bool identity_constraint(std::string user);
-    const static bool expiration_time(std::string time);
-};
+// class StaticConstraintFunctions {
+//     const static bool identity_constraint(std::string user);
+//     const static bool expiration_time(std::string time);
+// };
  
 class Frame {
     private:
@@ -90,37 +122,9 @@ class Request : public Frame {
         
 };
 
-class Token {
-    protected: 
-        std::string tag;
-        virtual std::string update_tag(bool store_tag=false)=0;
 
-    public:
-        const std::string get_tag(){return tag;};
-        void set_tag(const std::string& tag){this->tag = tag;};
-        virtual std::string to_string(bool contain_tag=false)=0;
-        virtual void from_string(const std::string& str_token, bool calc_tag=false)=0;
-        virtual void from_string_no_tag(const std::string& str_token, bool calc_tag=false)=0;
-        virtual const bool is_valid_signature()=0;
-        virtual const bool is_valid_derivation()=0;
-        virtual const bool is_valid_constraint()=0;
-        virtual const bool is_valid_token()=0;
-};
 
-class IdentidtyToken : public Token{
-    private:
-        
-        std::string identity_token;
-        std::string request_tag;
-        std::string update_tag(bool store_tag=false) override;
 
-    public:
-        
-        std::string to_string(bool contain_tag=false) override;
-        void from_string(const std::string& str_token, bool calc_tag=false) override;
-        void from_string_no_tag(const std::string& str_token, bool calc_tag=false) override;
-
-};
 
 class CapabilityToken : public Token{
     private:    
@@ -128,7 +132,7 @@ class CapabilityToken : public Token{
         std::vector<Frame*> body;
         Request* request=NULL;
 
-        std::string update_tag(bool store_tag=false) override;
+        std::string update_tag(bool store_tag=false);
         bool integrety_check();
 
     public:
@@ -140,17 +144,17 @@ class CapabilityToken : public Token{
 
         std::string to_string(bool contain_tag=false) override;
         void from_string(const std::string& str_token, bool calc_tag=false) override;
-        void from_string_no_tag(const std::string& str_token, bool calc_tag=false) override;
+        void from_string_no_tag(const std::string& str_token, bool calc_tag=false);
         
         void add_frame(Frame* frame); //Add the frame to body and recalculate the tag
-        const bool is_valid_signature() override;
-        const bool is_valid_derivation() override;
-        const bool is_valid_constraint() override;
-        const bool is_valid_token() override;
-        const bool is_valid_request();
+        const bool is_valid_signature();
+        const bool is_valid_derivation(const IdentityToken* token=nullptr);
+        const bool is_valid_token(const IdentityToken* token=nullptr);
+        const bool is_valid_identity_token(const IdentityToken* token); //attach the identity token
+        const bool is_valid_request(const IdentityToken* token); //attach the identity token
 
         //CSpot specific checks
-        const bool is_valid_request_cspot( const std::bitset<3>& operation_bits);//operation bits are set by the woofput specifiying that this is a put with/without handler
+        const bool is_valid_request_cspot(const IdentityToken* token, const std::bitset<3>& operation_bits);//operation bits are set by the woofput specifiying that this is a put with/without handler
 };
 
 

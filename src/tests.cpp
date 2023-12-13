@@ -113,11 +113,11 @@ void Tests::test_frame() {
 
 //Testing Tokens
 void Tests::test_token(){
-    std::string str_token = "ndkjscvkjsdvhbsdkjcvndkjsc2421%FRAME%/home/frame1/dir/*+0+000$/home/frame1/anotherdir/*+1+001"
+    std::string str_token = "9AD05276227ACEA544C58262AAA75ACFA6DA6BE4F905F5D05455C0B1BD801086%FRAME%/home/frame1/dir/*+0+000$/home/frame1/anotherdir/*+1+001"
                             "%FRAME%/home/frame2/dir/*+0+000$/home/frame2/anotherdir/*+1+001";
     CapabilityToken token;
-    token.from_string(str_token);
-    // printf("TAG: %s\n", token.get_tag());
+    token.from_string(str_token, false);
+    // printf("TAG: %s\n", token.get_tag().c_str());
     if(strcmp(str_token.c_str(), token.to_string(true).c_str()) != 0){
         printf("Token test FAILED\n");
         printf("Result: %s\nExpected: %s\n", token.to_string(true).c_str(), str_token.c_str());
@@ -129,7 +129,7 @@ void Tests::test_token(){
 
 void Tests::test_signature(){
     std::ifstream test_file; 
-    test_file.open("/home/centos/caplets/examples/test_signatures.txt");
+    test_file.open("../examples/test_signatures.txt");
     std::string test_case;
     CapabilityToken test_token;
     char ex_res_ch;
@@ -157,7 +157,7 @@ void Tests::test_signature(){
 }
 void Tests::test_derivation(){ 
     std::ifstream test_file; 
-    test_file.open("/home/centos/caplets/examples/test_derivations.txt");
+    test_file.open("../examples/test_derivations.txt");
     std::string test_case;
     CapabilityToken test_token;
     char ex_res_ch;
@@ -208,7 +208,7 @@ void Tests::create_token(){
     token.add_frame(frame_1);
     printf("Token with frame_1 : %s\n", token.get_tag().c_str());
     
-    Frame* frame_2 = new Frame();
+    Frame* frame_2 = new Frame() ;
     frame_2->from_string("/home/centos/temp/1+0+001$/home/centos/hum/1+0+011$/home/centos/gas/1+0+101");
     token.add_frame(frame_2);
     printf("Token with frame_2 : %s\n", token.get_tag().c_str());
@@ -226,6 +226,7 @@ void Tests::create_tokens_tags(std::string path){
     if (test_file.is_open()){
         while (getline(test_file, test_case)) { 
             CapabilityToken token;
+            // printf("Line: %s\n", test_case.c_str());
             token.from_string_no_tag(test_case, true);
             printf("%s\n",token.to_string(true).c_str());
         }
@@ -236,30 +237,37 @@ void Tests::create_tokens_tags(std::string path){
 
 void Tests::test_requests(){
     std::ifstream test_file; 
-    test_file.open("/home/centos/caplets/examples/test_requests.txt");
-    std::string test_case;
-    CapabilityToken test_token;
+    test_file.open("../examples/test_requests.txt");
+    std::string cap_token_str, id_token_str;
+
+    
     char ex_res_ch;
     bool expected_result;
     int count = 0;
     if (test_file.is_open()){
-        while (getline(test_file, test_case)) { 
+        while (getline(test_file, cap_token_str)) { 
             // Print the data of the string.
-            ex_res_ch = test_case[1];
+            ex_res_ch = cap_token_str[1];
             if(ex_res_ch == '1'){
                 expected_result=true;
-            }else expected_result = false;
-
-            test_case = test_case.substr(3,test_case.length());
+            }else {
+                expected_result = false;
+            }
             CapabilityToken test_token;
-            test_token.from_string_no_tag(test_case);
-            bool result = test_token.is_valid_request();
+            IdentityToken id_token;
+            cap_token_str = cap_token_str.substr(3,cap_token_str.length());
+            test_token.from_string(cap_token_str, false);
+
+            //get the id_token
+            getline(test_file, id_token_str);
+            id_token.from_string(id_token_str);
+            // printf("%s %s\n", id_token.get_identity_token().c_str(), id_token.get_request_tag().c_str());
+            bool result = test_token.is_valid_request(&id_token);
             if ( result == expected_result){
                 printf("Test request #%d: PASSED\n",count);
                 printf("-----------------------\n");
             } else {
                 printf("Test request #%d: FAILED\n",count);
-                printf("is_valid_request: %d", result);
                 printf("-----------------------\n");
             }
             count++;

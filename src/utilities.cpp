@@ -6,14 +6,34 @@
 #include <boost/algorithm/string.hpp>
 #include <secrets.h>
 #include "botan_all.h"
+#include <string_view>
 
 // using namespace util;
 
-void util::splitString(std::vector<std::string>& result, const std::string& input, const std::string& sep, bool token_compress_on) {
-    if(token_compress_on)
-        boost::split(result, input, boost::is_any_of(sep), boost::token_compress_on);
-    else
-        boost::split(result, input, boost::is_any_of(sep));
+// void util::splitString(std::vector<std::string>& result, const std::string& input, const std::string& sep, bool token_compress_on) {
+//     if(token_compress_on)
+//         boost::split(result, input, boost::is_any_of(sep), boost::token_compress_on);
+//     else
+//         boost::split(result, input, boost::is_any_of(sep));
+// }
+
+void util::splitString(std::vector<std::string>& result, std::string content, std::string delimeter)
+{
+    auto prev_pos = content.begin();
+    auto next_pos = std::search(prev_pos, content.end(),
+                               delimeter.begin(), delimeter.end());
+    while (next_pos != content.end())
+    {
+        result.emplace_back(prev_pos, next_pos);
+        prev_pos = next_pos + delimeter.size();
+        next_pos = std::search(prev_pos, content.end(), 
+                               delimeter.begin(), delimeter.end());
+    }
+
+    if (prev_pos != content.end())
+    {
+        result.emplace_back(prev_pos, content.end());
+    }
 }
 
 std::string util::compute_mac(const std::string& msg, const std::string& key){
