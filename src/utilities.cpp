@@ -3,19 +3,10 @@
 #include <algorithm>  
 #include <utilities.h>
 // #include <bits/stdc++.h>
-#include <boost/algorithm/string.hpp>
 #include <secrets.h>
 #include "botan_all.h"
-#include <string_view>
 
-// using namespace util;
 
-// void util::splitString(std::vector<std::string>& result, const std::string& input, const std::string& sep, bool token_compress_on) {
-//     if(token_compress_on)
-//         boost::split(result, input, boost::is_any_of(sep), boost::token_compress_on);
-//     else
-//         boost::split(result, input, boost::is_any_of(sep));
-// }
 
 void util::splitString(std::vector<std::string>& result, std::string content, std::string delimeter)
 {
