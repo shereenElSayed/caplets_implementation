@@ -1,6 +1,6 @@
-[submodule "deps/czmq"]
-	path = deps/czmq
-	url = https://github.com/FatihBAKIR/czmq
-[submodule "deps/libzmq"]
-	path = deps/libzmq
-	url = https://github.com/FatihBAKIR/libzmq
+[submodule "paho.mqtt.cpp"]
+	path = paho.mqtt.cpp
+	url = https://github.com/eclipse/paho.mqtt.cpp.git
+[submodule "paho.mqtt.c"]
+	path = paho.mqtt.c
+	url = https://github.com/eclipse/paho.mqtt.c.git

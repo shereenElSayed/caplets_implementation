@@ -38,7 +38,7 @@ botan_generate(
 )
 
 # add_subdirectory(deps)
-
+find_package(PahoMqttC)
 
 add_library(caplets src/caplets.cpp src/utilities.cpp src/tests.cpp)
 target_link_libraries(caplets PUBLIC botan-lib ${Boost_LIBRARIES})
