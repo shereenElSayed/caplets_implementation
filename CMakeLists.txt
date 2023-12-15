@@ -18,27 +18,9 @@ botan_generate(
         auto_rng
         hex
         mac
-        rsa
-        pbkdf
-        pbkdf1
-        pbkdf2
-        pem
-        pgp_s2k
-        pk_pad
-        pkcs11
-        poly1305
-        poly_dbl
-        prf_tls
-        prf_x942
-        proc_walk
-        processor_rng
-        psk_db
-        pubkey
-
 )
 
 # add_subdirectory(deps)
-find_package(PahoMqttC)
 
 add_library(caplets src/caplets.cpp src/utilities.cpp src/tests.cpp)
 target_link_libraries(caplets PUBLIC botan-lib ${Boost_LIBRARIES})
