@@ -22,8 +22,8 @@ botan_generate(
 
 # add_subdirectory(deps)
 
-add_library(caplets src/caplets.cpp src/utilities.cpp src/tests.cpp)
-target_link_libraries(caplets PUBLIC botan-lib ${Boost_LIBRARIES})
+add_library(caplets STATIC src/caplets.cpp src/utilities.cpp src/tests.cpp)
+target_link_libraries(caplets PUBLIC botan-lib )
 target_include_directories(caplets PUBLIC  
                                     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
                                     $<INSTALL_INTERFACE:include> )

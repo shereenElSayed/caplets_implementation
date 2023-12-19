@@ -8,5 +8,5 @@ int main(){
     // Tests::test_token();
     // Tests::test_signature();
     // Tests::test_derivation();
-    // Tests::test_requests();
+     Tests::test_requests();
 }
