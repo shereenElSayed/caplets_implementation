@@ -119,6 +119,14 @@ std::string Request::to_string(){
     return "request:"+this->capability.get_resource() + ":" + this->handler_name + ":" + this->value + ":" + this->capability.get_cap_bits().to_string();
 }
 
+void Token::set_tag(std::string&& tag){
+    this->tag = util::trim(tag);
+}
+
+void Token::set_tag(std::string&& tag){
+    this->tag = util::trim(tag);
+}
+
 /**
  * Converts a capability token to string 
  * @param calc_tag if true, the capability token has the tag in the beginning, else it starts with the frames
@@ -227,7 +235,7 @@ std::string CapabilityToken::update_tag(bool store_tag){
     }
         
     if(store_tag){
-        this->tag = new_tag;
+        this->set_tag(std::move(new_tag));
     }
     return new_tag;
 }
@@ -247,7 +255,7 @@ const bool CapabilityToken::is_valid_signature(){
         return true;
     } else {
         printf("Signature validation failed\n");
-        printf("Calculated tag: %s\nOriginal tag: %s\n",calculated_tag.c_str(),  this->tag.c_str());
+        //printf("Calculated tag: %s\nOriginal tag: %s\n",calculated_tag.c_str(),  this->tag.c_str());
         return false;
     }
     
@@ -344,17 +352,18 @@ const bool CapabilityToken::is_valid_token(const IdentityToken* token){
 const bool CapabilityToken::is_valid_identity_token(const IdentityToken* token){
 
     IdentityToken* id_token = (IdentityToken*)token;
+
     if(id_token->get_identity_token().length() == 0 || id_token->get_request_tag().length() == 0 || id_token->get_tag().length() == 0) {
         printf("is_valid_identity_token:: false 1\n");
         return false;
     }
 
     if(strcmp(id_token->get_request_tag().c_str(), this->get_tag().c_str()) != 0){
-        // printf("id_token->get_request_tag(): %s\nthis->get_tag(): %s\n", id_token->get_request_tag().c_str(), this->get_tag().c_str());
+        //printf("id_token->get_request_tag(): %s\nthis->get_tag(): %s\n", id_token->get_request_tag().c_str(), this->get_tag().c_str());
         printf("is_valid_identity_token:: false 2\n");
         return false;
     }
-
+ 
     if(!id_token->is_valid_signature()){
         printf("is_valid_identity_token:: false 3\n");
         return false;
@@ -375,7 +384,7 @@ const bool CapabilityToken::is_valid_request(const IdentityToken* token){
             continue_validation = true;
     } else if(this->is_valid_identity_token(token) && this->is_valid_token(token)){
         continue_validation = true;
-        printf("continue_validation\n");
+        //printf("continue_validation\n");
     }
 
     if(continue_validation){
@@ -400,7 +409,7 @@ const bool CapabilityToken::is_valid_request(const IdentityToken* token){
 // validates that the request to cspot is valid
 const bool CapabilityToken::is_valid_request_cspot(const IdentityToken* token, const std::bitset<3>& operation_bits){
     if(is_valid_request(token)){
-        printf("token is valid, checking the bits now\n");
+        //printf("token is valid, checking the bits now\n");
         return util::is_cap_bits_valid(((CapabilityStructure)this->request->get_capability()).get_cap_bits(), operation_bits);
     }
     return false;
@@ -425,7 +434,7 @@ std::string IdentityToken::to_string(bool contain_tag){
 
 
 void IdentityToken::from_string(const std::string& str_token, bool calc_tag){
-    this->tag = str_token.substr(0, str_token.find("%FRAME%",0));
+    this->set_tag(str_token.substr(0, str_token.find("%FRAME%",0)));
     std::vector<std::string> str_frames;
 
     util::splitString(str_frames, str_token.substr(str_token.find("%FRAME%")+7, str_token.length()), "%FRAME%");
@@ -443,7 +452,7 @@ void IdentityToken::from_string(const std::string& str_token, bool calc_tag){
 
 void IdentityToken::add_identity_token(std::string id_token){
     this->identity_token = id_token;
-    this->tag = util::compute_mac(id_token, this->tag);
+    this->set_tag(util::compute_mac(id_token, this->tag));
 }
 
 std::string IdentityToken::add_request_tag(std::string request_tag){
@@ -452,7 +461,7 @@ std::string IdentityToken::add_request_tag(std::string request_tag){
 }
 
 std::string IdentityToken::create_initial_token(){
-    this->tag = util::compute_mac(IDENTITY_TOKEN_DUMMY_BODY, SECRET);
+    this->set_tag(util::compute_mac(IDENTITY_TOKEN_DUMMY_BODY, SECRET));
     return tag + "%FRAME%" + IDENTITY_TOKEN_DUMMY_BODY;
 }
 
@@ -461,8 +470,12 @@ const bool IdentityToken::is_valid_signature(){
     std::string new_tag = util::compute_mac(IDENTITY_TOKEN_DUMMY_BODY, SECRET);
     new_tag = util::compute_mac(this->identity_token, new_tag);
     new_tag = util::compute_mac(this->request_tag, new_tag);
+    //printf("BEFORE: calc tag: %s\nid_token tag: %s\n", new_tag.c_str(), this->tag.c_str());
     if(strcmp(new_tag.c_str(), this->tag.c_str()) == 0){
         return true;
     }
+    //printf("strcmp result: %d\n", strcmp(new_tag.c_str(), this->tag.c_str()));
+    //printf("AFTER: calc tag: %s\nid_token tag: %s\n", new_tag.c_str(), this->tag.c_str());
+    //printf("Request tag: %s\nIdentinty token: %s\n", this->request_tag.c_str(), this->identity_token.c_str());
     return false;
 }

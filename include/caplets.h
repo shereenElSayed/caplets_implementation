@@ -40,7 +40,7 @@ class Token {
 
     public:
         const std::string get_tag(){return tag;};
-        void set_tag(const std::string& tag){this->tag = tag;};
+        void set_tag(std::string&& tag);
         virtual std::string to_string(bool contain_tag=false)=0;
         virtual void from_string(const std::string& str_token, bool calc_tag=false)=0;
 
@@ -57,6 +57,8 @@ class IdentityToken : public Token{
     public:
         const std::string get_identity_token(){return identity_token;};
         const std::string get_request_tag(){return request_tag;};
+        void set_request_tag(const std::string& req){request_tag = req;};
+
         std::string create_initial_token();
         void add_identity_token(std::string id_token); //add identity token frame then recalculates the tag and stores it.
         std::string add_request_tag(std::string request_tag); //This adds the req tag and calculates the new tag and returns the tag+tokenbody - Does not store tag
