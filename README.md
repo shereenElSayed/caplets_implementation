@@ -12,3 +12,6 @@ find_package(caplets REQUIRED)
 '''
 
 Please note if you choose a different prefix for the installation, use it for caplets_DIR. The default installation is "/usr/local/lib/cmake/caplets"
+
+# Examples
+In folder ./examples check the test_*.txt files. The [0] indicates this is a false case and should fail the validation and [1] is a correct test
