@@ -7,7 +7,12 @@
 #include "botan_all.h"
 
 
-
+/**
+ * splits a string into a vector<string> using the delimeter
+ * @param result is the vector with all the strings after the split
+ * @param content the string to be split
+ * @param delimeter the delimeter to be used to split the string. It can be multiple letters as well
+ */
 void util::splitString(std::vector<std::string>& result, std::string content, std::string delimeter)
 {
     auto prev_pos = content.begin();
@@ -27,12 +32,18 @@ void util::splitString(std::vector<std::string>& result, std::string content, st
     }
 }
 
+
+/**
+ * Compute  HMAC for a msg with a key
+*/
 std::string util::compute_mac(const std::string& msg, const std::string& key){
     std::vector<uint8_t> key_vec(key.begin(), key.end());
     Botan::secure_vector<uint8_t> secure_key_vec(key_vec.begin(), key_vec.end());
     return util::compute_mac(msg, secure_key_vec);
 }
-
+/**
+ * use util::compute_mac(const std::string& msg, const std::string& key) instead
+*/
 std::string util::compute_mac(const std::string& msg, const Botan::secure_vector<uint8_t>& key) {
    auto hmac = Botan::MessageAuthenticationCode::create_or_throw(ALGORITHM);
    hmac->set_key(key);
@@ -41,6 +52,11 @@ std::string util::compute_mac(const std::string& msg, const Botan::secure_vector
    return Botan::hex_encode(hmac->final());
 }
 
+/**
+ * Verification for the capabilities - Path wise
+ * @param part Path of a directory in a lower capability 
+ * @param full The full path to check if the part param can be reached using the full one
+*/
 bool util::is_path_subset_of_path(const std::string& part, const std::string& full){
     std::vector<std::string> part_vec, full_vec;
     util::splitString(part_vec, part, "/");
@@ -68,6 +84,9 @@ bool operator<(const std::bitset<N>& x, const std::bitset<N>& y)
     return false;
 }
 
+/**
+ * 
+*/
 bool util::is_cap_subset_of_cap(const CapabilityStructure& part, const CapabilityStructure& full){
     if(((CapabilityStructure)part).get_type() != ((CapabilityStructure)full).get_type()){
         return false;

@@ -6,17 +6,18 @@
 #include <secrets.h>
 
 
-// Capability looks like this: "0+000" this means 0 for device and 000 is the capability
 const std::string CapabilityStructure::to_string(){
     return this->resource + "+" + std::to_string(this->type) + "+" +this->cap_bits.to_string();
 }
 
+/**
+ * Create a CapabilityStructure from a string
+ * */ 
 void CapabilityStructure::from_string(const std::string cap_string) {
     std::vector<std::string> result;
     util::splitString(result, cap_string, "+");
     
     this->resource = result[0];
-    // capability_structure cpstr;
 
     if (strcmp(result[1].c_str(), "0") == 0){
         this->type = capability_type::device_cap;
@@ -26,7 +27,7 @@ void CapabilityStructure::from_string(const std::string cap_string) {
     this->cap_bits = atoi(result[2].c_str());
 }
 
-
+//Convert Contraint to string, it looks like this: FUNCTION:<FUNCTION_NAME>:<PARAMETER1>:<PARAMETER2>...
 const std::string Constraint::to_string(){
     std::string result =  "FUNCTION:" + this->function;
     for(std::string s : this->parameters){
@@ -34,9 +35,9 @@ const std::string Constraint::to_string(){
     }
     return result;
 }
-
+//Convert a string to a Constraint FUNCTION:<function_name>:<parameter>:<parameter>:<parameter>
 void Constraint::from_string(const std::string const_string){
-    //FUNCTION:<function_name>:<parameter>:<parameter>:<parameter>
+    
     int func_para_separator_index = const_string.find(':');
     util::splitString(this->parameters, const_string.substr(func_para_separator_index+1, const_string.size()), ":");
     this->function = this->parameters[0];
@@ -44,6 +45,7 @@ void Constraint::from_string(const std::string const_string){
     this->parameters.erase(this->parameters.begin());
 }
 
+// Capabilities then Constraints in the frame
 // Frame looks like this: "/home/centos/dir/*+0+000$/home/centos/anotherdir/*+1+001$FUNCTION:<function_name>:<parameter>:<parameter>:<parameter>"
 std::string Frame::to_string(){
     std::string result="";
@@ -72,6 +74,8 @@ std::string Frame::to_string(){
     result.substr(0, result.length() - 1); //remove last $
     return result;
 }
+
+// Convert a string to Frame object 
 void Frame::from_string(const std::string& str){
     std::vector<std::string> string_vec;
     util::splitString(string_vec, str, "$");
@@ -95,8 +99,10 @@ void Frame::from_string(const std::string& str){
     }
 }
 
+// Convert string to Request
+// request:woof_name:handler_name:value:operation
 void Request::from_string(const std::string& request){
-    //request:woof_name:handler_name:value:operation
+   
     std::vector<std::string> string_vec;
     util::splitString(string_vec, request, ":");
 
@@ -108,11 +114,16 @@ void Request::from_string(const std::string& request){
     this->capability.set_cap_bits(atoi(string_vec[4].c_str()));
 }
 
-
+// Convert a string to Request Object
 std::string Request::to_string(){
     return "request:"+this->capability.get_resource() + ":" + this->handler_name + ":" + this->value + ":" + this->capability.get_cap_bits().to_string();
 }
 
+/**
+ * Converts a capability token to string 
+ * @param calc_tag if true, the capability token has the tag in the beginning, else it starts with the frames
+ * @return The capability token as a string
+*/
 std::string CapabilityToken::to_string(bool calc_tag){
 
     std::string output;
@@ -131,6 +142,11 @@ std::string CapabilityToken::to_string(bool calc_tag){
     return output;
 }
 
+/**
+ * Create a capability token from string
+ * @param str_token is the token in the string format
+ * @param calc_tag if true, the tag is calculated else it is extracted from the string
+*/
 void CapabilityToken::from_string(const std::string& str_token, bool calc_tag){
     //Get tag
     if(!calc_tag) {
@@ -140,6 +156,13 @@ void CapabilityToken::from_string(const std::string& str_token, bool calc_tag){
     this->from_string_no_tag(str_token, calc_tag);
 
 }
+
+/**
+ * Create a capability token from string. 
+ * You do not need to call this function, call CapabilityToken::from_string instead
+ * @param str_token is the token in the string format
+ * @param calc_tag if true, the tag is calculated else it is extracted from the string
+*/
 void CapabilityToken::from_string_no_tag(const std::string& str_token, bool calc_tag){
     
     //Get token body
@@ -187,6 +210,7 @@ void CapabilityToken::from_string_no_tag(const std::string& str_token, bool calc
 
 }
 
+// Adds a frame to the list of frames in a capability token body
 void CapabilityToken::add_frame(Frame* frame){
     this->body.emplace_back(frame);
     update_tag(true);
@@ -208,6 +232,9 @@ std::string CapabilityToken::update_tag(bool store_tag){
     return new_tag;
 }
 
+/**
+ * @return true if the signature validation is correct (tag sent == tag recalculated)
+*/
 const bool CapabilityToken::is_valid_signature(){
     std::string calculated_tag=SECRET;
     int body_size = this->body.size();
@@ -225,7 +252,10 @@ const bool CapabilityToken::is_valid_signature(){
     }
     
 }
-
+/**
+ * @return true if derivation is true:
+ *  capabilities in a frame are subset to the previous frame's capabilities 
+*/
 const bool CapabilityToken::is_valid_derivation(const IdentityToken* token)//this token is identity_token
 {
     if(this->body.size() == 0) return false;
@@ -280,6 +310,10 @@ const bool CapabilityToken::is_valid_derivation(const IdentityToken* token)//thi
     return true;
 }
 
+/**
+ * @return true if constraint (identity_constraint) is valid
+ * @todo expiration_time predefined constraint
+*/
 const bool Constraint::is_valid_constraint(const Token* token) {
     if(strcmp(this->get_function().c_str(), "identity_constraint") == 0){
         if(token == nullptr || this->get_parameters().size() != 1){
@@ -296,6 +330,7 @@ const bool Constraint::is_valid_constraint(const Token* token) {
 
     return true;
 }
+
 
 const bool CapabilityToken::is_valid_token(const IdentityToken* token){
     //Signature Verification
@@ -362,6 +397,7 @@ const bool CapabilityToken::is_valid_request(const IdentityToken* token){
     return false;
 }
 
+// validates that the request to cspot is valid
 const bool CapabilityToken::is_valid_request_cspot(const IdentityToken* token, const std::bitset<3>& operation_bits){
     if(is_valid_request(token)){
         printf("token is valid, checking the bits now\n");
