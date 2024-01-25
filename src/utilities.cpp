@@ -54,27 +54,6 @@ std::string& util::trim(std::string& s, const char* t)
 }
 
 
-
-// trim from end of string (right)
-std::string& util::rtrim(std::string& s, const char* t)
-{
-    s.erase(s.find_last_not_of(t) + 1);
-    return s;
-}
-
-std::string& util::ltrim(std::string& s, const char* t)
-{
-    s.erase(0, s.find_first_not_of(t));
-    return s;
-}
-
-// trim from both ends of string (right then left)
-std::string& util::trim(std::string& s, const char* t)
-{
-    return util::ltrim(util::rtrim(s, t), t);
-}
-
-
 /**
  * Compute  HMAC for a msg with a key
 */
