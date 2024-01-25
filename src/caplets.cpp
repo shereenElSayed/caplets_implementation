@@ -123,9 +123,6 @@ void Token::set_tag(std::string&& tag){
     this->tag = util::trim(tag);
 }
 
-void Token::set_tag(std::string&& tag){
-    this->tag = util::trim(tag);
-}
 
 /**
  * Converts a capability token to string 
